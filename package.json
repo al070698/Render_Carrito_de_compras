@@ -1,0 +1,27 @@
+{
+  "name": "carrito-de-compras",
+  "version": "1.0.0",
+  "description": "carrito de compras con mercado pago",
+  "license": "MIT",
+  "author": "OCTAVIO",
+  "type": "module",
+  "main": "Server.js",
+  "scripts": {
+    "start": "node Server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1042.0",
+    "@aws-sdk/s3-request-presigner": "^3.1042.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "express-fileupload": "^1.5.2",
+    "express-session": "^1.19.0",
+    "mercadopago": "^2.2.0",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.5.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}
