@@ -240,7 +240,13 @@ async function procesarPago() {
         return;
     }
 
-    // Deshabilitamos el botón para evitar clicks múltiples
+    // 1. Obtenemos y validamos los datos de envío antes de procesar el pago
+    const datosEnvio = obtenerDatosEnvio();
+    if (!datosEnvio) {
+        alert('Por favor, completa todos los campos de información de envío.');
+        return;
+    }
+
     const btn = document.querySelector('.btn-terminar-compra');
     if (btn) {
         btn.disabled = true;
@@ -248,13 +254,13 @@ async function procesarPago() {
     }
 
     try {
-        // Llamamos al endpoint que crea la preferencia de pago en Mercado Pago
         const response = await fetch('/pago/iniciar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                items: carrito,      // Array del carrito {id, titulo, qty}
-                envio: COSTO_ENVIO   // Costo de envío fijo
+                items: carrito,      
+                envio: COSTO_ENVIO,  
+                direccion_envio: datosEnvio // <-- Se envía el nuevo objeto al servidor
             })
         });
 
@@ -308,4 +314,36 @@ async function cargarImagenURL(keyimagen){
     const res = await fetch(`/files/${keyimagen}`);
     const data = await res.json();
     return data.url;
+}
+
+/**
+ * Extrae, estructura y valida la información del formulario de envío.
+ * @returns {Object|null} Objeto con los datos o null si faltan campos.
+ */
+function obtenerDatosEnvio() {
+    const pais = document.getElementById('envio-pais').value;
+    const nombre = document.getElementById('envio-nombre').value.trim();
+    const apellidos = document.getElementById('envio-apellidos').value.trim();
+    const calle = document.getElementById('envio-calle').value.trim();
+    const colonia = document.getElementById('envio-colonia').value.trim();
+    const cp = document.getElementById('envio-cp').value.trim();
+    const ciudad = document.getElementById('envio-ciudad').value.trim();
+    const estado = document.getElementById('envio-estado').value.trim();
+    const telefono = document.getElementById('envio-telefono').value.trim();
+
+    // Validamos que los campos esenciales no estén vacíos
+    if (!nombre || !apellidos || !calle || !cp || !ciudad || !estado || !telefono) {
+        return null;
+    }
+
+    // Retornamos un objeto estructurado de forma coherente para la base de datos
+    return {
+        pais: pais,
+        receptor: `${nombre} ${apellidos}`,
+        direccion: `${calle}, ${colonia}`,
+        codigo_postal: cp,
+        ciudad: ciudad,
+        estado: estado,
+        telefono: telefono
+    };
 }

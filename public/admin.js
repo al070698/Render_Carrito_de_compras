@@ -231,6 +231,7 @@ function abrirModalProducto() {
     document.getElementById('prod-cantidad').value = '';
     document.getElementById('prod-imagen').value = '';
     document.getElementById('prod-descripcion').value = '';
+    document.getElementById('prod-categoria').value = ''; // <-- NUEVA LÍNEA
     document.getElementById('modal-producto').classList.add('open'); // Muestra el modal
 }
 
@@ -251,6 +252,7 @@ function editarProducto(id) {
     document.getElementById('prod-cantidad').value = p.cantidad || 0;
     document.getElementById('prod-imagen').value = p.imagen || '';
     document.getElementById('prod-descripcion').value = p.descripcion || '';
+    document.getElementById('prod-categoria').value = p.categoria || '';
     document.getElementById('modal-producto').classList.add('open'); // Muestra el modal
 }
 
@@ -307,7 +309,8 @@ async function guardarProducto() {
         precio: document.getElementById('prod-precio').value,
         cantidad: document.getElementById('prod-cantidad').value,
         imagen: nombreImagen,
-        descripcion: document.getElementById('prod-descripcion').value.trim()
+        descripcion: document.getElementById('prod-descripcion').value.trim(),
+        categoria: document.getElementById('prod-categoria').value
     };
 
     // Validamos los campos obligatorios

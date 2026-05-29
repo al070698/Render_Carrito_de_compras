@@ -52,14 +52,16 @@ header {
 .hero {
     /* 100vh es toda la pantalla. Restamos ~74px que es el alto aproximado de tu header */
     height: calc(100vh - 74px); 
-    background-image: url('img/leon_banner.png'); /* Cambia esto por tu imagen de fondo */ 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /*background-image: url('img/leon_banner.png'); /* Cambia esto por tu imagen de fondo */ 
+    /*background-size: cover;
+    /*background-position: center;
+    /*background-repeat: no-repeat; */
+    
     display: flex;
     align-items: center;
     padding: 0 4rem;
     position: relative;
+    overflow: hidden; /* NUEVO: Evita que el carrusel se desborde */
 }
 
 /* Overlay semitransparente para que el texto negro contraste bien con cualquier foto */
@@ -73,6 +75,89 @@ header {
     /* Gradiente suave: claro a la izquierda (donde va el texto), transparente a la derecha */
     background: linear-gradient(to right, rgba(255, 248, 240, 0.9) 0%, rgba(255, 255, 255, 0) 80%);
     z-index: 1;
+}
+
+.hero-carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Va al fondo, detrás del gradiente y el texto */
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene la proporción sin deformar, igual que hacías antes */
+    object-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out; /* Animación suave tipo "fade" */
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.15); /* Fondo sutil oscuro */
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 3; /* Asegura que esté por encima del overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.carousel-control:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateY(-50%) scale(1.1); /* Pequeño efecto de zoom al pasar el mouse */
+}
+
+.carousel-control.prev { left: 2rem; }
+.carousel-control.next { right: 2rem; }
+
+/* --- INDICADORES DEL CARRUSEL (PUNTOS) --- */
+.carousel-indicators {
+    position: absolute;
+    bottom: 25px; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px; 
+    z-index: 3;
+}
+
+/* Agregamos .carousel-indicators al principio para que tenga mayor prioridad y no choque con el login */
+.carousel-indicators .dot {
+    position: static; /* <-- ESTO EVITA QUE SE APILEN */
+    width: 14px;
+    height: 14px;
+    background-color: rgba(255, 255, 255, 0.4); 
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); 
+}
+
+.carousel-indicators .dot:hover {
+    background-color: rgba(255, 255, 255, 0.7); 
+}
+
+.carousel-indicators .dot.active {
+    background-color: #ffffff; 
 }
 
 .hero-content {
@@ -2001,4 +2086,73 @@ footer {
     .split-layout { flex-direction: column; overflow-y: auto; position: relative; }
     .left-panel, .right-panel { padding: 2rem; min-height: 50vh; }
     .hero-title { font-size: 2.5rem; }
+}
+
+/* ============================================================
+   ESTILOS DE LA SECCIÓN DE ENVÍO (CHECKOUT)
+   ============================================================ */
+
+.shipping-section {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin-bottom: 24px;
+    border: 1px solid #eee;
+}
+
+.shipping-header h2 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.shipping-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group-shipping {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-shipping label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.input-shipping {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.15s ease;
+}
+
+/* Cambio sutil de borde al interactuar */
+.input-shipping:focus {
+    border-color: #1a1a1a;
+    outline: none;
+}
+
+/* Modificadores de Grid */
+.field-full {
+    grid-column: span 2;
+}
+
+.shipping-nested-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }

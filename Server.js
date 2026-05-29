@@ -109,6 +109,7 @@ const compraSchema = new mongoose.Schema({
     total: Number,      // Total pagado (subtotal + envío)
     subtotal: Number,   // Subtotal sin envío
     envio: Number,      // Costo de envío
+    direccion_envio: Object, // <-- NUEVO: Para guardar la dirección capturada
     usuario_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users' }, // Usuario que realizó la compra
     mp_payment_id: String,    // ID del pago en Mercado Pago (para rastreo)
     mp_preference_id: String, // ID de la preferencia de MP (generada al iniciar el pago)
@@ -290,7 +291,8 @@ app.get("/Retorno", async (req, res) => {
 // ============================================================
 
 app.post("/pago/iniciar", async (req, res) => {
-    const { items, envio } = req.body; // items = arreglo del carrito, envio = costo de envío
+    // 1. Extraemos direccion_envio del req.body
+    const { items, envio, direccion_envio } = req.body;
 
     // Solo usuarios logueados pueden pagar
     if (!req.isAuthenticated()) {
@@ -374,7 +376,8 @@ app.post("/pago/iniciar", async (req, res) => {
             subtotal: Number(subtotal.toFixed(2)),
             envio: costoEnvio,
             total: totalFinal,
-            usuario_id: req.user._id // Asociamos la compra al usuario logueado
+            direccion_envio: direccion_envio, // <-- Se añade la dirección al guardar
+            usuario_id: req.user._id 
         });
         await nuevaCompra.save();
 

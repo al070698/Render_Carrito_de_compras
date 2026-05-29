@@ -33,10 +33,10 @@
         </div> -->
 
         <div class="search-box-modern">
-            <form onsubmit="BuscarFunco(); return false;" class="modern-form">
+            <form action="Busqueda.html" method="GET" class="modern-form">
                 <i class="bi bi-search"></i>
                 <input type="text" name="q" id="search-input" placeholder="Buscar tu Funko..." required>
-                <button type="submit" class="hidden-btn" style="display:none;" onclick="BuscarFunco()">Buscar</button>
+                <button type="submit" class="hidden-btn" style="display:none;">Buscar</button>
             </form>
         </div>
 
@@ -71,14 +71,26 @@
     </header>
 
     <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h2>Momentos vueltos<br>colección.</h2>
-                <!-- <p class="subtitle">Funko AI ✦</p> -->
-                <div class="hero-actions">
-                    <h3 href="#home-content" class="link-btn">Ver Catálogo</h3>
-                </div>
-            </div>
+        <section class="hero"> <!-- Sección con carrusel -->
+            <div class="hero-carousel">
+        <img src="img/leon_banner.png" class="carousel-slide active" alt="Banner 1">
+        <img src="img/marcus_banner.png" class="carousel-slide" alt="Banner 2"> 
+        <img src="img/Hawks_banner.png" class="carousel-slide" alt="Banner 3"> 
+    </div>
+
+    <button class="carousel-control prev" aria-label="Anterior">&#10094;</button>
+    <button class="carousel-control next" aria-label="Siguiente">&#10095;</button>
+
+    <div class="carousel-indicators" id="carousel-dots">
+    </div>
+
+    <div class="hero-content">
+        <h2>Momentos vueltos<br>colección.</h2>
+        <div class="hero-actions">
+            <h3 href="#home-content" class="link-btn">Ver Catálogo</h3>
+        </div>
+    </div>
+    </div>
         </section>
 
         <div id="home-content">

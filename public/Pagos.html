@@ -31,7 +31,7 @@
         </div> -->
 
         <div class="search-box-modern">
-            <form onsubmit="irABuscar(event)" class="modern-form">
+            <form action="Busqueda.html" method="GET" class="modern-form">
                 <i class="bi bi-search"></i>
                 <input type="text" name="q" id="search-input" placeholder="Buscar tu Funko..." required>
                 <button type="submit" class="hidden-btn" style="display:none;">Buscar</button>
@@ -69,52 +69,117 @@
             <h1 class="page-title">RESUMEN DE TU CARRITO</h1>
             
             <div class="checkout-container" style="padding: 0; max-width: 100%;">
+
+                <!-- Sección de la dirección de envío -->
+                <section class="shipping-section">
+    <div class="shipping-header">
+        <h2>Información de Envío</h2>
+    </div>
+    
+    <form id="form-envio" class="shipping-form">
+        <div class="form-group-shipping field-full">
+            <label>País / Región</label>
+            <select id="envio-pais" class="input-shipping">
+                <option value="MX">México</option>
+            </select>
+        </div>
+
+        <div class="form-group-shipping">
+            <label>Nombre:</label>
+            <input type="text" id="envio-nombre" class="input-shipping" placeholder="Mi nombre">
+        </div>
+        <div class="form-group-shipping">
+            <label>Apellidos:</label>
+            <input type="text" id="envio-apellidos" class="input-shipping" placeholder="Mis apellidos">
+        </div>
+
+        <div class="form-group-shipping field-full">
+            <label>Cumpleaños:</label>
+            <input type="text" id="envio-cumpleanos" class="input-shipping" placeholder="DD/MM/AA">
+        </div>
+
+        <div class="form-group-shipping field-full">
+            <label>Calle y número:</label>
+            <input type="text" id="envio-calle" class="input-shipping" placeholder="Ejemplo: Av. Central 123">
+        </div>
+
+        <div class="form-group-shipping field-full">
+            <label>Colonia y referencias:</label>
+            <input type="text" id="envio-colonia" class="input-shipping" placeholder="Ejemplo: Casa amarilla.">
+        </div>
+
+        <div class="form-group-shipping">
+            <label>Código postal:</label>
+            <input type="text" id="envio-cp" class="input-shipping" placeholder="Ejemplo: 00000">
+        </div>
+        
+        <div class="shipping-nested-grid">
+            <div class="form-group-shipping">
+                <label>Ciudad:</label>
+                <input type="text" id="envio-ciudad" class="input-shipping" placeholder="Ejemplo: Ciudad de México">
+            </div>
+            <div class="form-group-shipping">
+                <label>Estado:</label>
+                <input type="text" id="envio-estado" class="input-shipping" placeholder="Ejemplo: CDMX">
+            </div>
+        </div>
+
+        <div class="form-group-shipping field-full">
+            <label>Teléfono:</label>
+            <input type="tel" id="envio-telefono" class="input-shipping" placeholder="000 000 0000">
+        </div>
+    </form>
+
+    
+</section>
                 
-                <section class="cart-section">
-                    <div class="cart-table">
-                        <div class="cart-header">
-                            <div class="col-article">ARTÍCULO</div>
-                            <div class="col-qty" style="text-align: center;">CANT.</div>
-                            <div class="col-price">TOTAL</div>
-                        </div>
-
-                        <div id="lista-checkout">
+                <div class="checkout-right-column" style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <section class="cart-section">
+                        <div class="cart-table">
+                            <div class="cart-header">
+                                <div class="col-article">ARTÍCULO</div>
+                                <div class="col-qty" style="text-align: center;">CANT.</div>
+                                <div class="col-price">TOTAL</div>
                             </div>
-                    </div>
-                </section>
 
-                <aside class="summary-section">
-                    <div class="summary-box">
-                        <div class="summary-header">
-                            <h2>INFORMACIÓN DE PAGO</h2>
+                            <div id="lista-checkout">
+                                </div>
                         </div>
+                    </section>
 
-                        <div class="cost-breakdown">
-                            <div class="cost-row">
-                                <span>Subtotal</span>
-                                <span id="resumen-subtotal">$0.00</span>
+                    <aside class="summary-section">
+                        <div class="summary-box">
+                            <div class="summary-header">
+                                <h2>INFORMACIÓN DE PAGO</h2>
                             </div>
-                            <div class="cost-row">
-                                <span>Costo de envío</span>
-                                <span id="resumen-envio">$0.00</span>
+
+                            <div class="cost-breakdown">
+                                <div class="cost-row">
+                                    <span>Subtotal</span>
+                                    <span id="resumen-subtotal">$0.00</span>
+                                </div>
+                                <div class="cost-row">
+                                    <span>Costo de envío</span>
+                                    <span id="resumen-envio">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="total-row">
+                                <span>Total</span>
+                                <span id="resumen-total">$0.00</span>
+                            </div>
+                            <p class="tax-note">IVA incluido · Precios en MXN</p>
+
+                            <button class="btn-checkout btn-terminar-compra" onclick="procesarPago()">
+                                TERMINAR COMPRA
+                            </button>
+                            
+                            <div class="security-badge">
+                                <i class="bi bi-shield-check"></i> Pago 100% seguro por Mercado Pago
                             </div>
                         </div>
-
-                        <div class="total-row">
-                            <span>Total</span>
-                            <span id="resumen-total">$0.00</span>
-                        </div>
-                        <p class="tax-note">IVA incluido · Precios en MXN</p>
-
-                        <button class="btn-checkout btn-terminar-compra" onclick="procesarPago()">
-                            TERMINAR COMPRA
-                        </button>
-                        
-                        <div class="security-badge">
-                            <i class="bi bi-shield-check"></i> Pago 100% seguro por Mercado Pago
-                        </div>
-                    </div>
-                </aside>
+                    </aside>
 
             </div>
         </div>

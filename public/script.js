@@ -571,3 +571,71 @@ async function cargarImagenURL(keyimagen){
     const data = await res.json();
     return data.url;
 }
+
+// --- LÓGICA DEL CARRUSEL DEL HOME (INTERACTIVO Y DINÁMICO) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dotsContainer = document.getElementById('carousel-dots');
+    const prevBtn = document.querySelector('.carousel-control.prev');
+    const nextBtn = document.querySelector('.carousel-control.next');
+    
+    if (slides.length === 0 || !dotsContainer) return;
+
+    let currentSlide = 0;
+    const slideIntervalTime = 5000;
+    let slideTimer;
+    let dots = []; // Aquí guardaremos los puntos generados
+
+    // 1. Generar los puntos dinámicamente
+    slides.forEach((_, index) => {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        if (index === 0) dot.classList.add('active'); // El primero empieza activo
+        
+        // Agregar evento de clic a cada punto
+        dot.addEventListener('click', () => {
+            goToSlide(index);
+            resetTimer();
+        });
+
+        dotsContainer.appendChild(dot);
+        dots.push(dot); // Lo guardamos en nuestro array
+    });
+
+    // 2. Función principal para cambiar de imagen
+    const goToSlide = (index) => {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        
+        currentSlide = index;
+        if (currentSlide < 0) currentSlide = slides.length - 1;
+        if (currentSlide >= slides.length) currentSlide = 0;
+        
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+    };
+
+    const nextSlide = () => {
+        goToSlide(currentSlide + 1);
+    };
+
+    const resetTimer = () => {
+        clearInterval(slideTimer);
+        slideTimer = setInterval(nextSlide, slideIntervalTime);
+    };
+
+    // 3. Eventos de las flechas
+    if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            goToSlide(currentSlide - 1);
+            resetTimer();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            goToSlide(currentSlide + 1);
+            resetTimer();
+        });
+    }
+
+    resetTimer();
+});
