@@ -42,18 +42,6 @@ const port = process.env.PORT || 3000; // Usa el puerto del .env o el 3000 por d
 // ============================================================
 // Se usa la URL almacenada en la variable DATABASE del .env
 // ============================================================
-
-//const uri = DATABASE;
-/*
-const uri = 'mongodb+srv://al061914_db_user:prUZyfz5aRiGK3kO@clusterfunkohunter.o2pcqmu.mongodb.net/?appName=ClusterFunkoHunter';
-mongoose.connect(uri, {
-}).then(() => {
-    console.log("Conexión a MongoDB exitosa");
-
-}).catch((error) => {
-    console.error("Error al conectar a MongoDB:", error.message);
-});*/
-
 const url = DATABASE;
 
 // Conecta con MongoDB y muestra resultado en consola
@@ -73,7 +61,8 @@ const funkoSchema = new mongoose.Schema({
     descripcion: String,  // Descripción del producto
     precio: Number,       // Precio unitario en MXN
     cantidad: Number,     // Stock disponible
-    imagen: String        // Nombre/key del archivo en AWS S3
+    imagen: String,       // Nombre/key del archivo en AWS S3
+    categoria: String     // <-- NUEVO: Atributo para categorizar el producto
 });
 const Funko = mongoose.model('productos_funko', funkoSchema);
 
@@ -115,8 +104,21 @@ const compraSchema = new mongoose.Schema({
     mp_preference_id: String, // ID de la preferencia de MP (generada al iniciar el pago)
     fecha: { type: Date, default: Date.now } // Fecha de la compra
 });
+    
 const Compra = mongoose.model('compras', compraSchema);
 
+
+export const Direccion = new mongoose.Schema({
+    pais: String,
+    nombre: String,
+    apellidos: String,
+    calleynumero: String,
+    ColoniayReferencias: String,
+    codigopostal: String,
+    ciudad: String,
+    estado: String,
+    telefono: String
+});
 
 // ============================================================
 // MIDDLEWARES GLOBALES
@@ -148,6 +150,7 @@ app.use(fileUpload({
 app.get('/', (req, res) => {
     res.sendFile('Index.html', { root: './public' });
 });
+
 
 // 2. Ruta para iniciar el flujo de inicio de sesión con Google
 // Pide acceso al perfil y al email del usuario
@@ -252,6 +255,7 @@ app.get("/productos", async (req, res) => {
     }
 });
 
+/*
 // 2. Búsqueda de productos por título (equivalente a ILIKE de PostgreSQL)
 // Recibe el término de búsqueda como query param: /Retorno?FunkitoBuscadito=batman
 app.get("/Retorno", async (req, res) => {
@@ -265,6 +269,41 @@ app.get("/Retorno", async (req, res) => {
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: "Error en el buscador" });
+    }
+});
+*/
+
+// 2. Búsqueda de productos por título o categoría
+app.get("/Retorno", async (req, res) => {
+    const ValorStorage = req.query.FunkitoBuscadito || ""; 
+    try {
+        // Usamos $or para buscar coincidencias tanto en el título como en la categoría
+        const result = await Funko.find({
+            $or: [
+                { titulo: { $regex: ValorStorage, $options: "i" } },
+                { categoria: { $regex: ValorStorage, $options: "i" } }
+            ]
+        }).limit(20); 
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: "Error en el buscador" });
+    }
+});
+
+// 3. Búsqueda de productos por categoría
+// Recibe la categoría como query param: /RetornoCategoria?cat=Anime
+app.get("/RetornoCategoria", async (req, res) => {
+    const categoriaBuscada = req.query.cat || ""; 
+    try {
+        // Usamos regex con opción "i" para que sea flexible y case-insensitive
+        const result = await Funko.find({
+            categoria: { $regex: categoriaBuscada, $options: "i" }
+        }).limit(20); // Máximo 20 resultados para no saturar la vista
+        
+        res.json(result);
+    } catch (error) {
+        console.error("Error al buscar por categoría:", error);
+        res.status(500).json({ error: "Error en el buscador por categoría" });
     }
 });
 
@@ -788,7 +827,7 @@ app.get("/admin/productos", requireAdmin, async (req, res) => {
  * Body requerido: { titulo, precio, cantidad, descripcion, imagen }
  */
 app.post("/admin/productos", requireAdmin, async (req, res) => {
-    const { titulo, precio, cantidad, descripcion, imagen } = req.body;
+    const { titulo, precio, cantidad, descripcion, imagen, categoria } = req.body;
     try {
         // Validamos los campos obligatorios antes de guardar
         if (!titulo || precio == null || cantidad == null) {
@@ -799,7 +838,8 @@ app.post("/admin/productos", requireAdmin, async (req, res) => {
             precio: Number(precio),
             cantidad: parseInt(cantidad),
             descripcion: descripcion || '', // Si no viene descripción, guardamos string vacío
-            imagen: imagen || ''
+            imagen: imagen || '', // Si no viene imagen, guardamos string vacío
+            categoria: categoria || '' // 2. Le decimos que lo guarde en Mongo
         });
         await nuevo.save();
         console.log(`[Admin ${req.user.email}] Creó producto: ${titulo}`);
@@ -817,7 +857,7 @@ app.post("/admin/productos", requireAdmin, async (req, res) => {
  */
 app.put("/admin/productos/:id", requireAdmin, async (req, res) => {
     const { id } = req.params;
-    const { titulo, precio, cantidad, descripcion, imagen } = req.body;
+    const { titulo, precio, cantidad, descripcion, imagen, categoria } = req.body;
     try {
         // Construimos el objeto de cambios solo con los campos que llegaron
         const cambios = {};
@@ -826,6 +866,7 @@ app.put("/admin/productos/:id", requireAdmin, async (req, res) => {
         if (cantidad !== undefined) cambios.cantidad = parseInt(cantidad);
         if (descripcion !== undefined) cambios.descripcion = descripcion;
         if (imagen !== undefined) cambios.imagen = imagen;
+        if (categoria !== undefined) cambios.categoria = categoria; // 2. Registramos el cambio
 
         // { new: true } devuelve el documento actualizado, no el original
         const actualizado = await Funko.findByIdAndUpdate(id, cambios, { new: true });

@@ -504,7 +504,7 @@ async function BuscarFunco() {
         // El servidor usa regex de MongoDB para búsqueda flexible (case-insensitive)
         const res = await fetch(`/Retorno?FunkitoBuscadito=${encodeURIComponent(valorServer)}`);
         const data = await res.json();
-        const headCatalog = document.getElementById("headCatalog");
+        const headCatalog = document.getElementById("search-catalog");
 
         // Mostramos el encabezado con los resultados encontrados
         if (data.length === 0) {

@@ -93,10 +93,10 @@
             <input type="text" id="envio-apellidos" class="input-shipping" placeholder="Mis apellidos">
         </div>
 
-        <div class="form-group-shipping field-full">
+        <!--<div class="form-group-shipping field-full">
             <label>Cumpleaños:</label>
             <input type="text" id="envio-cumpleanos" class="input-shipping" placeholder="DD/MM/AA">
-        </div>
+        </div>-->
 
         <div class="form-group-shipping field-full">
             <label>Calle y número:</label>
@@ -198,5 +198,27 @@
     </footer>
 
     <script src="Pagos.js"></script>
+
+
+    <script>    
+        
+        /*function CerrarCarrito() {
+            localStorage.removeItem('carrito');
+            window.location.href = 'Index.html';
+        }*/
+    
+        function enviardireccionback(){
+            const pais = document.getElementById('envio-pais').value;
+            const nombre = document.getElementById('envio-nombre').value;
+            const apellidos = document.getElementById('envio-apellidos').value;
+            const calle = document.getElementById('envio-calle').value;
+            const colonia = document.getElementById('envio-colonia').value;
+            const codigopostal = document.getElementById('envio-cp').value;
+            const ciudad = document.getElementById('envio-ciudad').value;
+            const estado = document.getElementById('envio-estado').value;
+            const telefono = document.getElementById('envio-telefono').value;    
+        }
+    </script>
+
 </body>
 </html>
